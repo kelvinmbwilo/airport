@@ -1,0 +1,93 @@
+<style>
+    @font-face {
+        font-family: myBoldFont;
+        src: url('../fonts/ledboard.ttf');
+    }
+    .displayTable{
+        background-color: #373A3E;
+    }
+    thead{
+        background-color: wheat;
+    }
+    thead>tr>th{
+
+        border-left: 1px #95A4AC solid !important;
+        border-right: 1px #95A4AC solid !important;
+        font-weight: 800;
+        color:#231d2b;
+    }
+    tbody>tr>td{
+        border-top: 3px #95A4AC solid !important;
+        border-bottom: 3px #95A4AC solid !important;
+        border-left: 1px #95A4AC solid !important;
+        border-right: 1px #95A4AC solid !important;
+        font-weight: 800;
+        color:wheat;
+        /*font-family: myBoldFont;*/
+
+    }
+    .flight{
+
+    }
+    .date{
+
+    }
+    .time{
+
+    }
+    .remarks{
+
+    }
+</style>
+<div class="row" style="">
+    <dd id="countdown-retro"></dd>
+    <div class="col-sm-6">
+        <h1 class="text-center">Departures</h1>
+        <table class="table table-bordered displayTable">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th> <i class="fa fa-plane"></i> FLight</th>
+                <th> <i class="fa fa-location-arrow"></i> Destination</th>
+                <th> <i class="fa fa-openid"></i> Gate</th>
+                <th> <i class="fa fa-clock-o"></i> Departs</th>
+                <th> <i class="fa fa-info-circle"></i> Remarks</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="user in users | filter: { type: 'Departure' }" ng-hide="deletedUser[user.id]">
+                <td>{{ $index+1 }}</td>
+                <td class="flight">{{ user.flightname }}</td>
+                <td class="source">{{ user.sourcename }}</td>
+                <td class="date">{{ user.date | date:"dd MMM yyyy " }}</td>
+                <td class="time">{{ user.time | date: "h:mma"}}</td>
+                <td class="remarks">{{ user.status }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-6">
+        <h1 class="text-center">Arrivals</h1>
+        <table class="table table-bordered displayTable">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th> <i class="fa fa-plane"></i> FLight</th>
+                <th> <i class="fa fa-location-arrow"></i> Destination</th>
+                <th> <i class="fa fa-openid"></i> Gate</th>
+                <th> <i class="fa fa-clock-o"></i> Departs</th>
+                <th> <i class="fa fa-info-circle"></i> Remarks</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr  ng-repeat="user in users | filter: { type: 'Departure' }" ng-hide="deletedUser[user.id]">
+                <td>{{ $index+1 }}</td>
+                <td>{{ user.flightname }}</td>
+                <td>{{ user.sourcename }}</td>
+                <td>{{ user.date | date:"dd MMM yyyy " }}</td>
+                <td>{{ user.time | date: "h:mma"}}</td>
+                <td>{{ user.status }}</td>
+            </tbody>
+        </table>
+    </div>
+</div>

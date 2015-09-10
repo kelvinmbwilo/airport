@@ -1,0 +1,114 @@
+
+<h1>Timetable <md-button class="md-hue-3 md-raised  md-fab" style="height: 30px;width: 30px" ng-click="showAdd()"><i class="fa fa-plus"></i>
+    <md-tooltip>
+        Add Timetable
+    </md-tooltip>
+</md-button></h1>
+<div class="row" ng-if="showEditAdd">
+    <form name="kayaForm" novalidate>
+
+        <div class="col-xs-12">
+            <div class="col-xs-2"><b>Type</b>
+                <select ng-model="currentKaya.type"  required="" class="form-control">
+                    <option value="">-- Select --</option>
+                    <option value="Arrival">Arrival</option>
+                    <option value="Departure">Departure</option>
+                </select>
+            </div>
+            <div class="col-xs-2"><b>Flight</b>
+                <select ng-model="currentKaya.flight"  required="" class="form-control">
+                    <option value="">-- Select --</option>
+                    <option data-ng-repeat="value in flights" value="{{value.id}}">{{ value.name }} {{ value.code }}</option>
+                </select>
+            </div>
+            <div class="col-xs-2"><b ng-if="!currentKaya.type">Source</b><b ng-if="currentKaya.type=='Departure'">Destination</b><b ng-if="currentKaya.type=='Arrival'">From</b>
+                <select ng-model="currentKaya.source" required="" class="form-control">
+                    <option value="">-- Select --</option>
+                    <option data-ng-repeat="value in destinations" value="{{value.id}}">{{ value.name }} {{ value.short_name }}</option>
+                </select>
+            </div>
+            <div class="col-xs-2"><b>Remarks</b>
+                <select ng-model="currentKaya.status"  required="" class="form-control">
+                    <option value="">-- Select --</option>
+                    <option value="Delayed">Delayed</option>
+                    <option value="On Time">On Time</option>
+                    <option value="Canceled">Canceled</option>
+                </select>
+            </div>
+            <div class="col-xs-2"><b>Gate</b>
+                <input type="text" class="form-control"  ng-model="currentKaya.gate"  required=""/>
+
+            </div>
+            <div class="col-xs-2"><b>Date</b>
+                    <input type="text" class="form-control" ui-date="dateOptions" ng-model="currentKaya.date"  required=""/>
+            </div>
+            <div class="col-xs-2"><b>time</b>
+                <timepicker ng-model="currentKaya.time" ng-change="changed()" hour-step="1" minute-step="1" data-show-meridian="false"></timepicker>
+            </div>
+
+        </div>
+
+        <div class="col-xs-12" ng-hide="currentEditting">
+
+        </div>
+    </form>
+    <div class="col-xs-12" style="margin-top: 10px;margin-bottom: 10px">
+        <div class="col-xs-12">
+
+            <!--saving messages-->
+            <span class="pull-left" ng-if="currentSaving"><i class='fa fa-cog fa-2x fa-spin '></i> Saving.... </span>
+            <span class="pull-left text-success" ng-if="kayaSavedSuccess"><i class='fa fa-check fa-2x'></i> Saved Successful </span>
+            <span class="pull-left text-danger" ng-if="kayaSavedFalue"><i class='fa fa-times fa-2x'></i> Saving Failed </span>
+            <span class="pull-left text-warning" ng-if="passcheck"><i class='fa fa-warning fa-2x'></i> Two Password Do not Match </span>
+
+            <!--updating message-->
+            <span class="pull-left" ng-if="currentUpdating"><i class='fa fa-cog fa-2x fa-spin '></i> Saving.... </span>
+            <span class="pull-left text-success" ng-if="kayaUpdatedSuccess"><i class='fa fa-check fa-2x'></i> Saved Successful </span>
+            <span class="pull-left text-danger" ng-if="kayaUpdateFalue"><i class='fa fa-times fa-2x'></i> Saving Failed </span>
+
+            <div ng-hide="currentEditting" class="btn btn-primary btn-sm pull-right" ng-click="saveUser(currentKaya)" ng-disabled="kayaForm.$invalid || passcheck">&nbsp;&nbsp;&nbsp;<i class="fa fa-save"></i> Save&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div>
+            <div ng-show="currentEditting" class="btn btn-primary btn-sm pull-right" ng-click="updateUser(currentKaya)">Update </div>
+            <div ng-show="currentEditting" class="btn btn-warning btn-sm pull-right" ng-click="cancelEditting()">Cancel </div>
+            <div ng-hide="currentEditting" class="btn btn-warning btn-sm pull-right" ng-click="cancelAdding()">Cancel </div>
+        </div>
+    </div>
+</div>
+<table datatable="ng" cellpadding="0" cellspacing="0" width="100%" class="table table-bordered table-striped sortable">
+    <thead>
+    <tr>
+        <th width="5%">#</th>
+        <th width="10%">Type</th>
+        <th width="15%">Flight</th>
+        <th width="15%">To/From</th>
+        <th width="15%">Date</th>
+        <th width="10%">Time</th>
+        <th width="10%">Remarks</th>
+        <th width="10%">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="user in users | orderBy:'-usetime'" ng-hide="deletedUser[user.id]">
+        <td>{{ $index+1 }}</td>
+        <td>{{ user.type }}</td>
+        <td>{{ user.flightname }}</td>
+        <td>{{ user.sourcename }}</td>
+        <td>{{ user.date | date:"dd MMM yyyy" }}</td>
+        <td>{{ user.usetime | date: "HH:mm"}}</td>
+        <td>{{ user.status }}</td>
+        <td>
+            <md-button class="md-hue-3 md-raised  md-fab" style="height: 30px;width: 30px" ng-click="showAEdit(user)"><i class="fa fa-pencil-square"></i>
+                <md-tooltip>
+                    Update
+                </md-tooltip>
+            </md-button>
+            <md-button ng-if="!deletingdUser[user.id]" class="md-hue-3 md-raised md-warn md-fab" style="height: 30px;width: 30px" ng-click="showConfirm($event,user.id)"><i class="fa fa-trash-o"></i>
+
+                <md-tooltip>
+                    Delete
+                </md-tooltip>
+            </md-button>
+            <span ng-if="deletingdUser[user.id]"><i class="fa fa-spin fa-spinner"></i> Deleting</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
